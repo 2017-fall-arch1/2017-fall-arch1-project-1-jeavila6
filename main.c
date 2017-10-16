@@ -2,8 +2,12 @@
 #include <stdlib.h>
 #include <memory.h>
 
+#define MAX_LEN 32
+
+struct node *root = NULL;
+
 struct node {
-  char key[20];
+  char key[MAX_LEN];
   struct node *left;
   struct node *right;
 };
@@ -28,31 +32,52 @@ void printTree(struct node *root) {
 
 // Insert name into tree while preserving its structure
 struct node *insert(struct node *node, char keyToInsert[]) {
-  // Nowhere to go, return a new node
+  // Base case: return a new node
   if (node == NULL)
     return newNode(keyToInsert);
-  // Search for proper place
-  int result = strcmp(keyToInsert, node->key); // Compare the strings
-  if (result < 0)                              // keyToInsert < node->k
+  // Recursive case: search left or right subtree
+  int result = strcmp(keyToInsert, node->key); // Compare keyToInsert with node->key
+  if (result < 0)                              // keyToInsert < node->key
     node->left = insert(node->left, keyToInsert);
   else if (result > 0)                         // keyToInsert > node->key
     node->right = insert(node->right, keyToInsert);
   return node;
 }
 
-void testInsertion() {
-  struct node *root = NULL;
-  root = insert(root, "Carmon");
-  insert(root, "Mark");
-  insert(root, "John");
-  insert(root, "Alex");
-  insert(root, "Dan");
-  insert(root, "Ben");
-  insert(root, "Zach");
-  printTree(root);
+void insertName() {
+  printf("Enter employee name:");
+  char name[MAX_LEN];
+  fgets(name, MAX_LEN, stdin);
+  if (name[strlen(name)-1] == '\n') // Remove newline from input [outside source: https://goo.gl/nj2zPg]
+    name[strlen(name)-1] = '\0';
+  (root == NULL) ? root = insert(root, name) : insert(root, name); // If the tree is empty, insert as root
+  printf("Added '%s'\n\n", name);
 }
 
+// User interface for adding, removing, or listing employee names
 int main() {
-  testInsertion();
+  printf("0: Add a new employee name\n");
+  printf("2: List all employee names\n");
+  printf("9: Exit\n");
+  char select[MAX_LEN];
+  while (select[0] != '9') {
+    printf("Enter selection:");
+    fgets(select, MAX_LEN, stdin);
+    switch (select[0]) {
+    case '0':
+      insertName();
+      break;
+    case '2':
+      printTree(root);
+      printf("\n");
+      break;
+    case '9':
+      printf("Goodbye\n");
+      break;
+    default:
+      printf("Invalid option\n");
+      break;
+    }
+  }
   return 0;
 }
