@@ -8,8 +8,8 @@ The demo program allows the following operations using a text user interface:
 1. Insert a name into the tree
 2. Delete a name from the tree
 3. Print the contents of the tree
-4. Read and insert names from a file
-5. Write contents to a file
+4. Read and insert names from a file in working directory
+5. Write contents to a file in working directory
 
 This demo contains the following files:
 * bst.h: header file of BST structure
