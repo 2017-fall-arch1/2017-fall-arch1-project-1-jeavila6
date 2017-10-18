@@ -3,7 +3,7 @@
 #include <malloc.h>
 #include "bst.h"
 
-#define MAX_LEN 32
+#define MAX_LEN 32 /* Maximum length to read */
 
 struct node {
   char key[MAX_LEN];
@@ -11,7 +11,7 @@ struct node {
   struct node *right;
 };
 
-/* Returns a new node with name as key */
+/* Return a new node with name as key */
 struct node *newNode(char name[]) {
   struct node *temp = (struct node *) malloc(sizeof(struct node));
   strcpy(temp->key, name);
@@ -29,26 +29,35 @@ void printTree(struct node *root) {
   }
 }
 
+/* Write tree contents to file */
+void writeTree(struct node *root, FILE *outputFile) {
+  if (root != NULL) {
+    writeTree(root->left, outputFile);
+    fprintf(outputFile, "%s\n", root->key);
+    writeTree(root->right, outputFile);
+  }
+}
+
 /* Insert name into tree while preserving its structure */
 struct node *insert(struct node *root, char keyToInsert[]) {
   /* Base case - tree is empty, return a new node */
   if (root == NULL)
     return newNode(keyToInsert);
-  /* Recursive case - search left or right subtree */
+  /* Recursive case - search subtree */
   int result = strcmp(keyToInsert, root->key);           /* Compare keyToInsert with node->key */
-  if (result < 0)                                        /* keyToInsert < node->key */
+  if (result < 0)                                        /* keyToInsert < node->key, search left subtree */
     root->left = insert(root->left, keyToInsert);
-  else if (result > 0)                                   /* keyToInsert > node->key */
+  else if (result > 0)                                   /* keyToInsert > node->key, search right subtree */
     root->right = insert(root->right, keyToInsert);
   return root;
 }
 
-/* Search for a name and remove it from the tree if found */
+/* Search for name and remove it from the tree if found */
 struct node *deleteKey(struct node *root, char *keyToRemove) {
   /* Base case - tree is empty */
   if (root == NULL)
     return root;
-  /* Recursive case - search left or right subtree */
+  /* Recursive case - search subtree */
   int result = strcmp(keyToRemove, root->key);
   if (result < 0)                                        /* keyToFind < root->key, search left subtree */
     root->left = deleteKey(root->left, keyToRemove);
@@ -67,7 +76,7 @@ struct node *deleteKey(struct node *root, char *keyToRemove) {
     while (temp->left != NULL)
       temp = temp->left;
     strcpy(root->key, temp->key);
-    root->right = deleteKey(root->right, temp->key);   /* Remove the node after swapping names */
+    root->right = deleteKey(root->right, temp->key);   /* Remove the node after swapping contents */
   }
   return root;
 }

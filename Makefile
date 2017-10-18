@@ -1,2 +1,5 @@
-demo: bstDemo.c bst.c
-	gcc -o demo bstDemo.c bst.c -I.
+all: bstDemo.c bst.c
+	gcc -o bstDemo bstDemo.c bst.c -I.
+
+demo: all
+	./bstDemo
